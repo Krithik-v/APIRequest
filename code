@@ -1,0 +1,69 @@
+import requests
+import random
+import json
+import string
+
+#Base_url :-
+base_url = "https://gorest.co.in"
+
+#auth token
+auth_token = "Bearer 0c8b32ca6ae778dd212b7af8d5ffb9272321c36a582c550b9866047b63887350"
+
+#GET request
+def get_request():
+    url = base_url + "/public/v2/users/"
+    print("get url: " + url)
+    headers = {"Authorization" : auth_token}
+    response = requests.get(url, headers=headers)
+    assert response.status_code == 200
+    json_data = response.json()
+    json_str = json.dumps(json_data, indent=4)
+    print("json GET response body: ", json_str)
+
+#POST request
+def post_request():
+    url = base_url + "/public/v2/users/"
+    print("post url: " + url)
+    headers = {"Authorization": auth_token}
+    data = {
+        "name": "Lakshmi singh",
+        "email": "laku13@dibbert-mohr.test",
+        "gender": "female",
+        "status": "inactive"
+    }
+    response = requests.post(url, json=data, headers=headers)
+    assert response.status_code == 201
+    json_data = response.json()
+    json_str = json.dumps(json_data, indent=4)
+    print("json POST response body: ", json_str)
+    user_id = json_data["id"]
+    assert "name" in json_data
+    assert json_data["name"] == "Lakshmi singh"
+    return user_id
+
+
+#PUT request
+def put_request(user_id):
+    url = base_url + f"/public/v2/users/{user_id}"
+    print("put url: " + url)
+    headers = {"Authorization": auth_token}
+    data = {
+        "name": "Lakshmi singh lab",
+        "email": "laku013@dibbert-mohr.test",
+        "gender": "female",
+        "status": "active"
+    }
+    response = requests.put(url, json=data, headers=headers)
+    assert response.status_code == 200
+    json_data = response.json()
+    json_str = json.dumps(json_data, indent=4)
+    print("json PUT response body: ", json_str)
+    assert json_data["id"] == user_id
+    assert json_data["name"] == "Lakshmi singh lab"
+
+#DELETE request
+
+#Call
+#get_request()
+user_id = post_request()
+put_request(user_id)
